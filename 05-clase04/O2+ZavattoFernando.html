@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio 04 - Curso Backend</title>
+</head>
+<body>
+    <input type="text" id="entrada" value="" style="display: block;" placeholder="entrada..." />
+    <input type="text" id="salida" value="" style="display: block;" placeholder="salida" />
+    <script src="https://unpkg.com/rxjs@%5E7/dist/bundles/rxjs.umd.min.js"></script>
+    <script>
+        const {Observable, pipe, map} = rxjs;
+        const gnirtS = (out) => out.split("").reverse().join("");
+
+        let [input, output] = [document.querySelectorAll("#entrada")[0], document.querySelectorAll("#salida")[0]];
+
+        const entregable4 = new Observable((o) => {
+            input.addEventListener("input", (e) => {
+                let salida = e.target.value.toLowerCase();
+                switch (salida){
+                    case "complete":
+                        o.complete(console.log("Ingresaron \"complete\""));
+                        break;
+                    case "error":
+                        o.error(console.log("Ingresado \"error\""));
+                        break;
+                    default:
+                        o.next(salida);
+                }
+            });
+        });
+
+        const obsComplete = () => {
+            input.disabled = true;
+            output.disabled = true;
+            input.value = "";
+            output.value = "";
+            input.placeholder = "Deshabilitado por 'complete'";
+            output.placeholder = "Deshabilitado por 'complete'";
+            console.log("Deshabilitado por 'complete'");
+            suscriptor.unsubscribe();
+        }
+        const obsError = () => {
+            console.log(this.target);
+            input.disabled = true;
+            output.disabled = true;
+            input.value = "";
+            output.value = "";
+            input.placeholder = "Deshabilitado por 'error'";
+            output.placeholder = "Deshabilitado por 'error'";
+            console.log("Deshabilitado por 'error'");
+            suscriptor.unsubscribe();
+        }
+        const obsNext = (d) => {output.value = d};
+
+        const handler = {
+            complete: obsComplete,
+            error: obsError,
+            next: obsNext,
+        }
+
+        const suscriptor = entregable4
+            .pipe(map((salida) => gnirtS(salida)))
+            .subscribe(handler);
+
+        window.setTimeout(() => {
+            console.log("Subscription Timeout!!");
+            input.disabled = true;
+            input.value = "";
+            output.value = "";
+            input.placeholder = "Deshabilitado por timeout";
+            output.placeholder = "Deshabilitado por timeout";
+            suscriptor.unsubscribe();
+        }, 30000);
+
+    </script>
+</body>
+</html>
