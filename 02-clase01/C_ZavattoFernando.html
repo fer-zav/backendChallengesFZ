@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Desafío #1</title>
+    </head>
+    <body>
+
+        <script>
+            class Usuario{
+                constructor(nombre, apellido, libros, mascotas){
+                    this.nombre = nombre;
+                    this.apellido = apellido;
+                    this.libros = libros;
+                    this.mascotas = mascotas;
+            }
+
+            getFullName() {
+                return `${this.nombre} ${this.apellido}`;
+            }
+            addMascota(mascota) {
+                this.mascotas.push(mascota);
+            }
+            getMascotas() {
+                return this.mascotas;
+            }
+            addBook(book, autor) {
+                this.libros.push({nombre: book, autor: autor});
+            }
+            getBooks() {
+                return this.libros.map((b) => b.nombre);
+            }
+            }
+
+            let aldebaran = new Usuario("Aldebaran", "De Tauro", [{"nombre": "El Señor de los Anillos", "autor": "J. R. R. Tolkien"}, {"nombre": "Un Mundo Feliz", "autor": "Aldous Huxley"}], ["Toro", "Perro", "Lagarto"]);
+            console.log(aldebaran.getFullName());
+            console.log("Agregando un gato");
+            aldebaran.addMascota("Gato");
+            console.log(aldebaran.getMascotas());
+            console.log("Agregando \"Rayuela\" como libro");
+            aldebaran.addBook("Rayuela", "Julio Cortazar");
+            console.log(aldebaran.getBooks());
+        </script>
+    </body>
+</html>
