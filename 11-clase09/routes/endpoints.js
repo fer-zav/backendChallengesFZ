@@ -19,13 +19,8 @@ const validateId = (id) => {
 }
 
 endpoints.get("/", (req, res) => {
-    // res.json({
-    //     result: "Endpoint inicial!",
-    // });
-    const getProds = () => {return {...productos}};
-    res.render('main', {
-        "productos": getProds(),
-        layout: "index",
+    res.json({
+        result: "Endpoint inicial!",
     });
 });
 
