@@ -1,43 +1,57 @@
 export default class Items{
     _items = [];
+    __idx = 0;
     constructor(title, price, thumbnail){
         if (title && price && thumbnail){
             this._items.push({
                 title: title,
                 price: price,
                 thumbnail: thumbnail,
-                id: this._items.length,
+                id: this.__idx++,
             });
         }else{
             console.log("Error: sin items que agregar!");
         }
     }
 
-    getItems(){
-        return this._items.length < 1 ? "Lista vacia!" : this._items;
+    getLastItemId = () => {
+        return this.__idx;
     }
 
-    getItem(id){
-        return this._items.length < 1 ? "Sin productos todavia!" : this._items[id];
+    getItems = () => {
+        return this.__idx < 1 ? "Lista vacia!" : this._items;
     }
 
-    addItem(obj){
-        this._items.push({...obj, id: this._items.length});
+    getItem = (id) => {
+        return this.__idx < 1 ?
+            "Sin productos todavia!"
+        : this._items.filter((item) => item.id === id).length > 0 ?
+            this._items.filter((item) => item.id === id)[0]
+        : `No existe el item con ID == ${id}`;
+    }
+
+    addItem = (obj) => {
+        this._items.push({
+            title: obj.title,
+            price: obj.price,
+            thumbnail: obj.thumbnail,
+            id: this.__idx++,
+        });
         console.log("Item agregado!");
     }
 
-    modificarItem(id, payload){
-        if (this._items.length < 1){
+    modificarItem = (id, payload) => {
+        if (this.__idx < 1){
             return "Sin productos todavia!"
         }else{
-            return this._items[id] = {...payload, id: id};
+            return this._items.filter((item) => !item.id) = {...payload, id: id};
         }
     }
 
-    eliminarItem(id){
-        const oldItem = this._items[id].id === id ? this._items[id] : false;
+    eliminarItem = (id) => {
+        const oldItem = this._items.filter((item) => item.id === id) ? this._items.filter((item) => item.id === id)[0] : false;
         if (oldItem){
-            this._items = this._items.filter((i) => i !== oldItem);
+            this._items = this._items.filter((i) => i.id !== oldItem.id);
         }
         return oldItem;
     }
