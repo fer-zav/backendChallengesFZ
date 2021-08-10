@@ -44,7 +44,7 @@ export default class Items{
         if (this.__idx < 1){
             return "Sin productos todavia!"
         }else{
-            return this._items.filter((item) => !item.id) = {...payload, id: id};
+            return this._items.filter((item) => item.id === id)[0] = {...payload, id: id};
         }
     }
 
