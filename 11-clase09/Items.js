@@ -44,7 +44,9 @@ export default class Items{
         if (this.__idx < 1){
             return "Sin productos todavia!"
         }else{
-            return this._items.filter((item) => item.id === id)[0] = {...payload, id: id};
+            let newItem = {...payload, id: id}
+            this._items[this._items.indexOf(this._items.filter((item) => item.id === id)[0])] = newItem; //feo pero ya se sabe que existe el indice
+            return newItem;
         }
     }
 
