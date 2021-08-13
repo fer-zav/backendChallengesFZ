@@ -18,9 +18,9 @@ app.use("/public", express.static(publicFolderPath));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-// pug config
-app.set("views", "./views/pug");
-app.set("view engine", "pug");
+// ejs config
+app.set("views", "./views/ejs");
+app.set("view engine", "ejs");
 
 app.use("/api", endpoints);
 
