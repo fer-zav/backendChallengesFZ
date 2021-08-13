@@ -1,0 +1,18 @@
+extends layout.pug
+
+block content
+        div.container.col-xxl-6.col-xl-6.col-lg-6.col-md-8.col-sm-8
+            h1.text-center.formPadding Ingresa un producto nuevo
+            div.container
+                form(action="/api/productos/guardar" method="POST")
+                    div.mb-3
+                        label.form-label.fw-bold(for="title") Titulo
+                        input#productTitle.form-control(type="text" name="title")
+                    div.mb-3
+                        label.form-label.fw-bold(for="price") Precio
+                        input#productPrice.form-control(type="text" name="price")
+                    div.mb-3
+                        label.form-label.fw-bold(for="thumbnail") Preview
+                        input#productThumbnail.form-control(type="text" name="thumbnail")
+                    div.col.text-center
+                        button.btn.btn-success(type="submit") Cargar Producto

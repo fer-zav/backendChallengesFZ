@@ -1,0 +1,22 @@
+        <div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+            <h1 class="text-center formPadding">Ingresa un producto nuevo</h1>
+            <div class="container">
+                <form action="/api/productos/guardar" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-bold">Titulo</label>
+                        <input type="text" id="productTitle" name="title" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label fw-bold">Precio</label>
+                        <input type="text" id="productPrice" name="price" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="thumbnail" class="form-label fw-bold">Preview</label>
+                        <input type="text" id="productThumbnail" name="thumbnail" class="form-control" />
+                    </div>
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-success">Cargar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>

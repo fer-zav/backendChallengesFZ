@@ -1,0 +1,25 @@
+        <div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+            <h1 class="text-center formPadding">Productos</h1>
+            <div class="container">
+                {{#if cant }}
+                <table class="table table-responsive text-center">
+                    <tr>
+                        <td class="fw-bold">Nombre</td>
+                        <td class="fw-bold">Precio</td>
+                        <td class="fw-bold">id</td>
+                        <td class="fw-bold">Preview</td>
+                    </tr>
+                    {{#each productos._items }}
+                    <tr>
+                        <td>{{ this.title }}</td>
+                        <td>${{ this.price }}</td>
+                        <td>{{this.id}}</td>
+                        <td><img class="thumb" src="{{ this.thumbnail }}" /></td>
+                    </tr>
+                    {{/each }}
+                </table>
+                    {{ else }}
+                <h2>No hay productos!</h2>
+                {{/if }}
+            </div>
+        </div>

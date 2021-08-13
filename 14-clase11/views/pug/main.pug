@@ -1,0 +1,22 @@
+extends layout.pug
+
+block content
+        div.container.col-xxl-6.col-xl-6.col-lg-6.col-md-8.col-sm-8
+            h1.text-center.formPadding Productos
+            div.container
+                if cant
+                    table.table.table-responsive.text-center
+                        tr
+                            td.fw-bold Nombre
+                            td.fw-bold Precio
+                            td.fw-bold id
+                            td.fw-bold Preview
+                        each item of productos._items
+                            tr
+                                td #{ item.title }
+                                td $#{ item.price }
+                                td #{ item.id }
+                                td
+                                    img.thumb(src=`${ item.thumbnail }` title=`${ item.title }` alt=`[${ item.title }]`)
+                else
+                    h2 No hay productos!
