@@ -1,0 +1,26 @@
+        <link rel='stylesheet' href="../../public/wsStyles.css" />
+        <div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+            <h1 class="text-center formPadding">Productos</h1>
+            <div class="container">
+                <% if (cant){ %>
+                <table class="table table-responsive text-center" id="prodsTable">
+                    <tr>
+                        <td class="fw-bold">Nombre</td>
+                        <td class="fw-bold">Precio</td>
+                        <td class="fw-bold">Preview</td>
+                    </tr>
+                    <% productos._items.map(function(item){ %>
+                    <tr>
+                        <td><%= item.title %></td>
+                        <td>$<%= item.price %></td>
+                        <td><img class="thumb" src="<%= item.thumbnail %>" /></td>
+                    </tr>
+                    <% }); %>
+                </table>
+                <% }else{ %>
+                <h2>No hay productos!</h2>
+                <% } %>
+            </div>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../../public/test_main.js"></script>

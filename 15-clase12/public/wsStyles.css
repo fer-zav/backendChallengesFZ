@@ -1,0 +1,10 @@
+#wsForm{
+    display: flex;
+    justify-content: center;
+}
+#messages{
+    height: 50vh;
+    overflow: auto;
+    width: 60vw;
+    margin: 0 auto;
+}
