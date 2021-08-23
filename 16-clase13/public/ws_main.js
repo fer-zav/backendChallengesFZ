@@ -2,8 +2,7 @@ const socket = io.connect(window.location.href.split("/api")[0], {forceNew: true
 
 const addEntry = (producto) => {
     const table = document.querySelector("#prodsTable");
-    const newTr = document.createElement("tr");
-    newTr.innerHTML = `
+    const newTr = document.createElement("tr").innerHTML = `
         <td>${producto.title}</td>
         <td>${producto.price}</td>
         <td>
@@ -20,22 +19,23 @@ socket.on("list_update", (producto) => {
 });
 
 socket.on("list_init", (productos) => {
-    if (typeof(productos) !== "string"){ // si lalista esta vacia devuelve un string
+    if (typeof(productos) !== "string"){ //Si la lista esta vacia devuelve un string
         productos.forEach((prod) => {
             addEntry(prod);
         });
     }
 });
 
-socket.on("mostrar_txt_file", async (arch) => {
-    const payload = JSON.parse(arch).prductos;
-    console.log(payload);
-    document.getElementsByTagName("body")[0].innerHTML += payload.forEach((item) => {
-        return `<div>
-            <span>${item.algo}</span>
-            <span>${item.price}</span>
-            <span><img src="${item.thumbnail}" /></span>
-            <span>${item.algo}</span>
-        </div>`
-    });
-})
+socket.on("mostrar_txt_file", (arch) => {
+    if (arch){
+        html = arch.map((msg) =>
+            `<div>
+                <span>[${msg.date}]</span>
+                <strong> --> ${msg.auth}</strong>
+                <span>:${msg.text}</span>
+            </div>`
+        )
+        .join(" ");
+        document.getElementsByTagName("body")[0].innerHTML += html
+    }
+});

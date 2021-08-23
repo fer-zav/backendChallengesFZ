@@ -5,7 +5,10 @@ import fs from 'fs';
 export const Begin = (app) => {
     const io = new Server(app);
     const productos = new Items();
-    const messages = [{auth:"yo", text:"placeholder initial msg", date: new Date().getTime()}];
+    const msgsFile = "./messages.txt"
+    const tmpMsgs = fs.readFileSync(msgsFile, "utf-8");
+    const parseTmp = JSON.parse(tmpMsgs.length > 0 ? tmpMsgs : "{}");
+    const mensajes = parseTmp.messages?.length > 0 ? parseTmp : {messages: [{auth:"yo", text:"placeholder initial msg", date: new Date().getTime()}]};
 
     io.on("connection", (socket) => {
 
@@ -19,18 +22,24 @@ export const Begin = (app) => {
             if (prods.length > 0){
                 socket.emit("list_init", prods);
             }
-            socket.emit("messages_init", messages);
-            socket.emit("mostrar_txt_file", fs.readFileSync("products.txt", "utf-8"));
+            socket.emit("messages_init", mensajes.messages);
+            // socket.emit("mostrar_txt_file", mensajes.messages); //descomentar para emitir "mostrar_txt_file", del ws_main y mostrar asi el contenido del txt en el browser
         });
 
         socket.on("new_message", (msg) => {
-            messages.push(msg)
-            io.emit("push_new_message", msg);
-        });
-
-        socket.on('disconnect', function(data) {
-            console.log('disconnect!');
-            fs.appendFileSync("history.txt", messages, "utf-8");
+            mensajes.messages.push(msg)
+            io.emit("push_new_message", JSON.stringify(mensajes.messages));
+            fs.truncateSync(msgsFile, 0); // borrar el archivo
+            let fd = fs.openSync(msgsFile, "a");
+            fs.writeFileSync(fd, JSON.stringify(mensajes), "utf-8")
+            ?.catch((err) => {
+                console.log("error writing message data!", err)
+            })
+            ?.finally(() => {
+                if (fd !== undefined){
+                    fs.closeSync(fd);
+                }
+            });
         });
 
     });

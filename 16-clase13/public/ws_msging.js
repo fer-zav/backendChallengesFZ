@@ -4,7 +4,7 @@
 const addMessage = (e) => {
     e.preventDefault;
     const texto = document.querySelector("#msgTexto");
-    const message= {
+    const message = {
         auth: document.querySelector("#msgUsername").value,
         text: texto.value,
         date: new Date().getTime(),
@@ -32,10 +32,11 @@ const lowCostRender = (payload) => {
     document.querySelector("#messages").scrollTo({top: 10000, left: 0, behavior: 'smooth'});
 }
 
-socket.on("messages_init", (msg) => {
-    msg.length > 0 ? lowCostRender(msg) : false;
+socket.on("messages_init", (msgs) => {
+    msgs.length > 0 ? lowCostRender(msgs) : false;
 });
 
 socket.on("push_new_message", (newMsg) => {
-    lowCostRender([newMsg]);
+    const lastMsg = JSON.parse(newMsg)[JSON.parse(newMsg).length - 1];
+    lowCostRender([lastMsg]);
 });
