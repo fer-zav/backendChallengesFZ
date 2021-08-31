@@ -1,11 +1,11 @@
 class Carrito{
     _cart = [];
     __idx = 0;
-    constructor(product){
-        if (product && price && stock){
+    constructor(producto){
+        if (producto && price && stock){
             this._cart.push({
                 timestamp: new Date().getTime(),
-                product: {...product},
+                producto: {...producto},
                 id: this.__idx++,
             });
         }else{
@@ -13,15 +13,13 @@ class Carrito{
         }
     }
 
-    getLastItemId = () => {
-        return this.__idx;
-    }
-
     getItems = () => {
         return this.__idx < 1 ? "Carrito vacio!" : this._cart;
     }
 
     getItem = (id) => {
+        // console.log(id);
+        // console.log(this.__idx)
         return this.__idx < 1 ?
             "Sin productos todavia!"
         : this._cart.filter((item) => item.id === id).length > 0 ?
@@ -29,23 +27,52 @@ class Carrito{
         : false;
     }
 
-    addItem = (prod) => {
-        // const prod = this.getItem(id);
-        // if (prod && typeof(prod) !== "string"){
-        //     prod.product.stock--;
-        //     prod.quantity++
-            this._cart.push(prod);
-        // }else{
-        //     return `${id} no encontrado!`
-        // }
+    populateCart = (prod) => {
+        return this._cart.push({
+            id: this.__idx++,
+            timestamp: prod.timestamp,
+            quantity: prod.quantity,
+            producto: {...prod.producto},
+        });
+    }
+
+    addItem = (id) => {
+        const prod = this.getItem(id);
+        if (prod && typeof(prod) !== "string"){
+            if (prod.producto.stock > 0){
+                prod.producto.stock--;
+                prod.quantity++;
+                return true;
+            }else{
+                return `No hay mas stock disponible!`;
+            }
+        }else{
+            return `${JSON.stringify(id)} no encontrado!`;
+        }
     }
 
     deleteItem = (id) => {
-        const oldItem = this._cart.filter((item) => item.id === id) ? this._cart.filter((item) => item.id === id)[0] : false;
-        if (oldItem){
-            this._cart = this._cart.filter((i) => i.id !== oldItem.id);
+        const prod = this.getItem(id);
+        if (prod && typeof(prod) !== "string"){
+            if (prod.quantity > 0){
+                prod.producto.stock++;
+                prod.quantity--;
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return `${JSON.stringify(id)} no encontrado!`;
         }
-        return oldItem;
+    }
+
+    showCart = () => {
+        return this._cart.filter((i) => i.quantity > 0);
+    }
+
+    swapCart = (newCart) => {
+        this._cart = newCart;
+        this.__idx = newCart.length;
     }
 
 }

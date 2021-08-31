@@ -55,7 +55,7 @@ const serverChecker = () => {
         const options = {
             hostname: url,
             port: puerto,
-            path: '/productos/guardar/',
+            path: '/productos/agregar/',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

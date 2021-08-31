@@ -1,4 +1,4 @@
-//no se puede ser user y admin a la vez!!!
+//no se puede ser user y admin a la vez (o no deberia)!!!
 const check = "user";
 // const check = "admin";
 

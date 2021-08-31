@@ -5,13 +5,34 @@ import {authCheck, unAuthPayload} from '../authCheck.js';
 
 const cartEndpoints = express.Router();
 const carrito = Cart;
+const cartFile = "./cart.txt"
 
-const carritoPlaceholder = [
+const saveCart = (tempCart) => {
+    const retrievedData = fs.readFileSync(cartFile, "utf-8");
+    const payload = typeof(retrievedData) === "object" && retrievedData.carrito.length > 0 ? retrievedData : {"carrito": []}
+    const parsedData = tempCart.showCart();
+    parsedData.forEach((prod) => payload.carrito.push(prod));
+    payload.carrito = parsedData;
+
+    fs.truncateSync(cartFile, 0); // borrar el archivo
+    let fd = fs.openSync(cartFile, "a");
+    fs.writeFileSync(fd, JSON.stringify(payload), "utf-8")
+    ?.catch((err) => {
+        console.log("error escribiendo al archivo!", err)
+    })
+    ?.finally(() => {
+        if (fd !== undefined){
+            fs.closeSync(fd);
+        }
+    });
+}
+
+[
     {
-        id: 1,
+        id: 0,
         timestamp: new Date().getTime(),
         producto: {
-            id: 1,
+            id: 0,
             nombre: "Escuadra",
             precio: "123.45",
             descripcion: "",
@@ -23,10 +44,10 @@ const carritoPlaceholder = [
         quantity: 0,
     },
     {
-        id: 2,
+        id: 1,
         timestamp: new Date().getTime(),
         producto: {
-            id: 2,
+            id: 1,
             nombre: "Calculadora",
             precio: "234.56",
             descripcion: "",
@@ -38,10 +59,10 @@ const carritoPlaceholder = [
         quantity: 0,
     },
     {
-        id: 3,
+        id: 2,
         timestamp: new Date().getTime(),
         producto: {
-            id: 3,
+            id: 2,
             nombre: "Globo Terraqueo",
             precio: "345.67",
             descripcion: "",
@@ -52,101 +73,92 @@ const carritoPlaceholder = [
         },
         quantity: 0,
     }
-]
-.forEach((c) => carrito.addItem(c));
+].map((p) => carrito.populateCart(p));
 
-
-const cartFile = "./cart.txt"
 const carritoTemp = fs.readFileSync(cartFile, "utf-8");
-const parseTmp = JSON.parse(carritoTemp.length > 0 ? carritoTemp : "{}");
-// const llenarCarrito = parseTmp.carrito?.length > 0 ? parseTmp : {carrito: carrito};
+const parseCart = JSON.parse(typeof(carritoTemp) === "string" && carritoTemp.length > 2 ? carritoTemp : "{}");
+[0, 1, 2].forEach((i) => carrito.addItem(i)); // agregando items de la lista al carrito, segun su id
+
+carrito.getItems() < parseCart?.length ? carrito.swapCart(parseCart.carrito) : false; //checkeamos (safety first) e inicializamos el carrito populandolo con la data del archivo
 
 cartEndpoints.get("/", authCheck, (req, res) => {
+    let payload = {}
     if (req.authUser || req.authAdmin){
-        res.json({
-            result: "Admin",
-        });
+        payload = {result: "Admin"}
     }else if (req.authUser){
-        res.json({
-            result: "User",
-        });
+        payload = {result: "User"}
     }else{
-        res.json({
-            result: "error",
-            msg: "un-auth!",
-        });
+        payload = {result: "Error", msg: "Acceso negado!"}
+        res.status("500");
     }
+    res.json(payload);
 });
 
 cartEndpoints.get(["/listar", "/list", "/listar/:id", "/list/:id"], authCheck, (req, res) => {
+    let payload = {}
     if (req.authUser || req.authAdmin){
-        const id = Number(req.params.id);
-        if (id){
-            res.json({
-                result: `endpoint --> /listar/${id}|list/${id}`,
-                carrito: carrito.getItems(),
-                // result: result,
-            });
+        const itemId = Number(req.params.id);
+        if (carrito.showCart().length > 0){
+            const tmpCart = carrito.getItems();
+            if (!isNaN(itemId)){
+                const item = tmpCart.filter((i) => i.id === itemId && i.quantity > 0);
+                payload = {"result": item.length > 0 ? item : `No hay productos en el carrito con el id ${itemId}`}
+            }else{
+                payload = {"result": carrito.showCart()}
+            }
         }else{
-            res.json({
-                result: `endpoint --> /listar|/list`,
-                carrito: carrito.getItems(),
-            })
+            payload = {"result": `Carrito vacio!`}
         }
     }else{
-        res.json(unAuthPayload(req.originalUrl, req.method));
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
 });
 
-cartEndpoints.post(["/agregar", "/add"], authCheck, (req, res) => {
+cartEndpoints.post(["/agregar", "/add", "/agregar/:id", "/add/:id"], authCheck, (req, res) => { //agregados "/agregar" y "/add" para poder darle un error custom
+    let payload = {}
     if (req.authUser || req.authAdmin){
-        res.json({
-            result: `endpoint --> /agregar|/add`
-        });
-        // // console.log(req.headers.referer);
-        // const itemData = req.body;
-        // if (itemData?.title && itemData?.price && itemData?.thumbnail){
-        //     productos.addItem(itemData);
-        //     res.json({
-        //         result: "Exito!",
-        //         id: productos.getLastItemId() - 1,
-        //         newProdcut: itemData,
-        //     })
-        // }else{
-        //     res.json({
-        //         result: "Error: no se puede agregar un item invalido!",
-        //         suppliedItem: itemData,
-        //         validItemFormat: {
-        //             title: "exampleTitle",
-        //             price: "examplePrice",
-        //             thumbnail: "exampleThumbnail",
-        //         }
-        //     });
-        // }
+        const itemId = Number(req.params.id);
+        if (!isNaN(itemId)){
+            const added = carrito.addItem(itemId);
+            if (added === true){
+                payload = {"result": `item ${itemId} añadido exitosamente!`}
+                saveCart(carrito);
+            }else{
+                payload = {"result": `error agregando producto: ${added}`}
+                res.status("500");
+            }
+        }else{
+            payload = {"result": `falta el id del producto a agregar al carrito`}
+            res.status("500");
+        }
     }else{
-        res.json(unAuthPayload(req.originalUrl, req.method));
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
 });
 
-cartEndpoints.delete(["/borrar/:id", "/delete/:id"], (req, res) => {
+cartEndpoints.delete(["/borrar", "/delete", "/borrar/:id", "/delete/:id"], authCheck, (req, res) => {
+    let payload = {}
     if (req.authUser || req.authAdmin){
-        res.json({
-            result: `endpoint --> /borrar/${id}|/delete/${id}`
-        });
-        // const id = Number(req.params.id);
-        // const result = validateId(id);
-        // if (typeof(result) !== "string" && typeof(productos.getItem(id)) !== "string"){ // tanto el resultado como el lookup del item son NO string, quiere decir que alguno de los 2 (o ambos) esta/n correcto/s
-        //     res.json({
-        //         result: productos.eliminarItem(id),
-        //     });
-        // }else{
-        //     res.json({
-        //         result: result === true ? productos.getItem(id) : result, // si result tiene algun "insight" ademas de true, imprimirlo, si no, el output de llamar a getItem con id no encontrado!
-        //     });
-        // }
+        const itemId = Number(req.params.id);
+        if (!isNaN(itemId)){
+            const deleted = carrito.deleteItem(itemId);
+            if (deleted === true){
+                payload = {"result": `item ${itemId} eliminado exitosamente!`}
+                saveCart(carrito);
+            }else{
+                payload = {"result": `error eliminando producto: ${deleted}`}
+                res.status("500");
+            }
+        }else{
+            payload = {"result": `falta el id del producto a eliminar del carrito`}
+            res.status("500");
+        }
     }else{
-        res.json(unAuthPayload(req.originalUrl, req.method));
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
 });
 
 export default cartEndpoints;

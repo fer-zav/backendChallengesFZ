@@ -1,5 +1,6 @@
 import express from 'express';
 import Items from '../Items.js'
+import {authCheck, unAuthPayload} from '../authCheck.js';
 
 const prodEndpoints = express.Router();
 
@@ -18,22 +19,20 @@ const validateId = (id) => {
     : `Error: "${id}" es NaN!`;
 }
 
-const adminCheck = (check) => check ? true : false;
-// const adminCheck = (check) => {
-//     if (check){
-//         return true;
-//     }else{
-//         return false;
-//     }
-// }
-
-prodEndpoints.get("/", /*adminCheck(true), */(req, res) => {
-    res.json({
-        result: "Endpoint inicial!",
-    });
+prodEndpoints.get("/", authCheck, (req, res) => {
+    let payload = {}
+    if (req.authUser || req.authAdmin){
+        payload = {result: "Admin"}
+    }else if (req.authUser){
+        payload = {result: "User"}
+    }else{
+        payload = {result: "error", msg: "Acceso negado!"}
+        res.status("500");
+    }
+    res.json(payload);
 });
 
-prodEndpoints.get(["/vista", "/views"], (req, res) => {
+prodEndpoints.get(["/vista", "/views"], (req, res) => { /* conservado como tal por contener frontend */
     const getProds = () => {return {...productos}};
     res.render('main', {
         "productos": getProds(),
@@ -42,27 +41,32 @@ prodEndpoints.get(["/vista", "/views"], (req, res) => {
     });
 });
 
-prodEndpoints.get(["/listar", "/list", "/listar/:id", "/list/:id"], (req, res) => {
-    const id = Number(req.params.id);
-    if (id){
-        const result = validateId(id);
-        if (typeof(result) !== "string"){
-            res.json({
-                result: productos.getItem(id),
-            });
+prodEndpoints.get(["/listar", "/list", "/listar/:id", "/list/:id"], authCheck, (req, res) => {
+    let payload = {}
+    if (req.authUser || req.authAdmin){
+        const id = Number(req.params.id);
+        if (productos.getItems().length > 0){
+            if (!isNaN(id)){
+                const result = validateId(id);
+                if (typeof(result) !== "string"){
+                    payload = {result: productos.getItem(id) ? productos.getItem(id) : `No hay productos con el id ${id}`}
+                }else{
+                    payload = {result: result}
+                }
+            }else{
+                payload = {"result": productos.getItems()}
+            }
         }else{
-            res.json({
-                result: result,
-            });
+            payload = {"result": `Lista vacia!`}
         }
     }else{
-        res.json({
-            result: productos.getItems(),
-        })
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
+
 });
 
-prodEndpoints.get(["/agregar", "/add"], (req, res) => {
+prodEndpoints.get(["/guardar", "/save"], (req, res) => { //conservado como tal por contener frontend (intercambiado con "agregar/add")
     const getProds = () => {return {...productos}};
     res.render('form', {
         "productos": getProds(),
@@ -71,69 +75,78 @@ prodEndpoints.get(["/agregar", "/add"], (req, res) => {
     });
 });
 
-prodEndpoints.post(["/guardar", "/save"], (req, res) => {
-    // console.log(req.headers.referer);
+prodEndpoints.post(["/agregar", "/add"], authCheck, (req, res) => {
+    let payload = {}
     const itemData = req.body;
-    if (itemData?.title && itemData?.price && itemData?.thumbnail){
-        productos.addItem(itemData);
-        res.json({
-            result: "Exito!",
-            id: productos.getLastItemId() - 1,
-            newProdcut: itemData,
-        })
-    }else{
-        res.json({
-            result: "Error: no se puede agregar un item invalido!",
-            suppliedItem: itemData,
-            validItemFormat: {
-                title: "exampleTitle",
-                price: "examplePrice",
-                thumbnail: "exampleThumbnail",
+    if (req.authAdmin){
+        if (itemData?.title && itemData?.price && itemData?.thumbnail){
+            productos.addItem(itemData);
+            payload = {
+                result: "Exito!",
+                id: productos.getLastItemId() - 1,
+                newProdcut: itemData,
             }
-        });
-    }
-});
-
-prodEndpoints.put(["/actualizar/:id", "/update/:id"], (req, res) => {
-    const id = Number(req.params.id);
-    const itemData = req.body;
-    if (itemData?.title && itemData?.price && itemData?.thumbnail){
-        const result = validateId(id);
-        if (typeof(result) !== "string"){
-            res.json({
-                result: productos.modificarItem(id, itemData),
-            });
         }else{
-            res.json({
-                result: result,
-            });
+            payload = {
+                result: "Error: no se puede agregar un item invalido!",
+                suppliedItem: itemData,
+                validItemFormat: {
+                    title: "exampleTitle",
+                    price: "examplePrice",
+                    thumbnail: "exampleThumbnail",
+                }
+            }
+            res.status("500");
         }
     }else{
-        res.json({
-            result: "Error: no se puede actualizar un item invalido!",
-            suppliedItem: itemData,
-            validItemFormat: {
-                title: "exampleTitle",
-                price: "examplePrice",
-                thumbnail: "exampleThumbnail",
-            }
-        });
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
 });
 
-prodEndpoints.delete(["/borrar/:id", "/delete/:id"], (req, res) => {
-    const id = Number(req.params.id);
-    const result = validateId(id);
-    if (typeof(result) !== "string" && typeof(productos.getItem(id)) !== "string"){ // tanto el resultado como el lookup del item son NO string, quiere decir que alguno de los 2 (o ambos) esta/n correcto/s
-        res.json({
-            result: productos.eliminarItem(id),
-        });
+prodEndpoints.put(["/actualizar/:id", "/update/:id"], authCheck, (req, res) => {
+    let payload = {}
+    if (req.authAdmin){
+        const itemId = Number(req.params.id);
+        const itemData = req.body;
+        if (itemData?.title && itemData?.price && itemData?.thumbnail){
+            const result = validateId(itemId);
+            if (typeof(result) !== "string"){
+                payload = {result: productos.modificarItem(itemId, itemData)}
+            }else{
+                payload = {result: result}
+            }
+        }else{
+            payload = {
+                result: "Error: no se puede actualizar un item invalido!",
+                suppliedItem: itemData,
+                validItemFormat: {
+                    title: "exampleTitle",
+                    price: "examplePrice",
+                    thumbnail: "exampleThumbnail",
+                }
+            }
+        }
     }else{
-        res.json({
-            result: result === true ? productos.getItem(id) : result, // si result tiene algun "insight" ademas de true, imprimirlo, si no, el output de llamar a getItem con id no encontrado!
-        });
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
     }
+    res.json(payload);
+});
+
+prodEndpoints.delete(["/borrar", "/delete",  "/borrar/:id", "/delete/:id"], authCheck, (req, res) => {
+    let payload = {}
+    if (req.authAdmin){
+        const itemId = Number(req.params.id);
+        const result = validateId(itemId);
+        if (typeof(result) !== "string" && typeof(productos.getItem(itemId)) !== "string"){
+            payload = {result: productos.eliminarItem(itemId)}
+        }else{
+            payload = {result: result === true ? productos.getItem(itemId) : result}
+        }
+    }else{
+        payload = {"result": unAuthPayload(req.originalUrl, req.method)}
+    }
+    res.json(payload);
 });
 
 export default prodEndpoints;
-// export productos;

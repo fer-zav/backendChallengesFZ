@@ -22,21 +22,6 @@ app.set("view engine", "ejs");
 app.use(["/productos", "/products"], prodEndpoints);
 app.use(["/carrito", "/cart"], cartEndpoints);
 
-app.use((req, res) => {
-    console.log("\n404 capturado!");
-    console.log(res.req.headers.host + res.req.originalUrl);
-    res.status(404)
-    // .json({result: "404: Page Not Found!"}); // esta explotando, parece que todas las urls caen aca A PESAR de tener una ruta... :shrug:
-});
-
-app.use((err, req, res) => {
-    console.error(err.stack);
-    console.log(res.req.headers.host + res.req.originalUrl);
-    res.status(500)
-    .json({result: "500: Internal Server Error!"});
-})
-
-
 const server = http.Server(app);
 server.listen(puerto, () => console.log(`Servidor HTTP escuchado @ puerto ${server.address().port}`))
 .on("error", (error) => console.log(`SERVER ERROR!: ${error}`));
