@@ -1,19 +1,25 @@
 // Update with your config settings.
 
-module.exports = {
-
+const options = {
   staging: {
     client: 'sqlite3',
     connection: {
-      filename: './dev.sqlite3'
-    }
+      filename: process.env.SQLITE_FILENAME || './dev.sqlite3'
+    },
+    migrations: {
+      directory: __dirname + '/db/migrations',
+    },
+    seeds: {
+      directory: __dirname + '/db/seeds',
+    },
+    useNullAsDefault: true,
   },
 
   development: {
     client: 'mysql',
     connection: {
-      database: 'productos',
-      host: "localhost",
+      database: 'products', //ok, no funcionaba porque no estaba creada la base de datos "productos" -_-
+      host: '127.0.0.1',
       user: 'root',
       password: '',
     },
@@ -24,4 +30,7 @@ module.exports = {
       directory: __dirname + "/db/seeds"
     }
   },
+}
+module.exports = {
+  options
 };

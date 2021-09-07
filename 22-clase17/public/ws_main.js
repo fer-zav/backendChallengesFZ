@@ -1,4 +1,4 @@
-const socket = io.connect(window.location.href.split("/api")[0], {forceNew: true});
+const socket = io.connect(window.location.href.split("/product")[0], {forceNew: true});
 
 const addEntry = (producto) => {
     const table = document.querySelector("#prodsTable");
@@ -24,19 +24,5 @@ socket.on("list_init", (productos) => {
         productos.forEach((prod) => {
             addEntry(prod);
         });
-    }
-});
-
-socket.on("mostrar_txt_file", (arch) => {
-    if (arch){
-        const html = arch.map((msg) =>
-            `<div>
-                <span>[${msg.date}]</span>
-                <strong> --> ${msg.auth}</strong>
-                <span>:${msg.text}</span>
-            </div>`
-        )
-        .join(" ");
-        document.getElementsByTagName("body")[0].innerHTML += html
     }
 });

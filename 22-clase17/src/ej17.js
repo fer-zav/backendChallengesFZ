@@ -1,5 +1,6 @@
 import express from "express";
-import endpoints from "./routes/wsEndpoints.js"
+import prodEndpoints from "./routes/wsEndpoints.js"
+import cartEndpoints from "./routes/wsCart.js";
 import path from 'path';
 import * as http from "http";
 import {Begin} from "./libws.js";
@@ -18,7 +19,8 @@ app.use(express.urlencoded({extended: true}));
 app.set("views", "./views");
 app.set("view engine", "ejs");
 
-app.use(["/productos", "/products"], endpoints);
+app.use(["/productos", "/products"], prodEndpoints);
+app.use(["/carrito", "/cart"], cartEndpoints);
 
 const server = http.Server(app);
 server.listen(puerto, () =>

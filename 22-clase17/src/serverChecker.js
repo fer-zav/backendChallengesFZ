@@ -84,6 +84,7 @@ const serverChecker = (puerto) => {
         const req = http.request(options, (res) => {
             res.on('data', (d) => {
                 process.stdout.write(d);
+                process.stdout.write("\n");
             });
             process.stdout.write("\n");
         });

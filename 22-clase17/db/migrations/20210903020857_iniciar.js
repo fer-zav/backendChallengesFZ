@@ -1,26 +1,19 @@
 
-exports.up = function(knex) {
+exports.up = (knex) => {
     return knex.schema
-        .createTable("categorias", (categoriasTable) => {
-            categoriasTable.increments();
-            categoriasTable.string("nombre").notNullable();
-            categoriasTable.timestamp("createdAt").defaultTo(knex.fn.now());
-        })
-        .createTable("productos", (productosTable) => {
-            productosTable.increments();
-            productosTable.string("nombre").notNullable();
-            productosTable.string("descripcion").notNullable();
-            productosTable.integer("stock").notNullable();
-            productosTable.decimal("precio", 4, 2);
-            productosTable.timestamp("createdAt").defaultTo(knex.fn.now());
-            productosTable.integer("category_id")
-                .integer("category_id")
-                .unsigned()
-                .references("id")
-                .inTable("categorias");
+        .createTable("products", (table) => {
+            table.increments("id");
+            table.integer("timestamp").notNullable();
+            table.integer("currentQuantity").notNullable();
+            table.string("nombre").notNullable();
+            table.decimal("precio", 5, 2).notNullable();
+            table.string("descripcion").notNullable();
+            table.string("codigo").notNullable();
+            table.string("foto").notNullable();
+            table.integer("totalStock").notNullable();
         })
 };
 
-exports.down = function(knex) {
-    return knex.schema.dropTable("productos").droptTable("categorias")
+exports.down = (knex) => {
+    return knex.schema.dropTable("productos");
 };
