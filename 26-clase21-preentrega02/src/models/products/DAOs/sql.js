@@ -19,17 +19,10 @@ export class ProductosSQLDAO{
                             {_id: "2", nombre: "cartuchera", precio: 250},
                             {_id: "3", nombre: "boligoma", precio: 260},
                         ];
-                        this.connection.schema.createTable(tName, (table) => { // dejando la estructura como tal, por si despues se necesita cambiarse a esta
-                            // table.increments("id");
+                        this.connection.schema.createTable(tName, (table) => {
                             table.increments("_id");
-                            // table.bigInteger("timestamp").notNullable();
                             table.string("nombre").notNullable();
                             table.decimal("precio", 5, 2).notNullable();
-                            // table.string("descripcion").notNullable();
-                            // table.string("codigo").notNullable();
-                            // table.string("foto").notNullable();
-                            // table.integer("totalStock").notNullable();
-                            // table.integer("currentQuantity").notNullable();
                         })
                             .then(() => console.log("table products created."))
                             .catch((err) => console.log(`error detected: ${err.toString()}`))

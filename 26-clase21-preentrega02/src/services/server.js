@@ -16,10 +16,10 @@ app.set("view engine", "ejs");
 
 //https://stackoverflow.com/questions/50218878/typescript-express-error-function // "prestadisimo" jaja
 const errorHandler = (err, req, res, next) => {
-  console.log(`HUBO UN ERROR ${err}`);
-  res.status(500).json({
-    err: err.message,
-  });
+    console.log(`HUBO UN ERROR ${err}`);
+    res.status(500).json({
+        err: err.message,
+    });
 };
 
 app.use(errorHandler);

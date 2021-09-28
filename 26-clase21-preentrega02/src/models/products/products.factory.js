@@ -14,10 +14,10 @@ export const TipoPersistencia = {
 }
 
 export class ProductosFactoryDAO{
-    static get(tipo, local) {
+    static get = (tipo, local) => {
         switch (tipo) {
             case TipoPersistencia.FileSystem:
-                const filePath = path.resolve("./DAOs/products.json");
+                const filePath = path.resolve("./src/models/products/DAOs/products.json"); // el __dirname y las direcciones relativas no funcionanba, asique... hardcoded much :shrug:
                 return new ProductosFSDAO(filePath);
             case TipoPersistencia.SQL:
                 return new ProductosSQLDAO(local); //true: dev, sqlite; false: stage, mysql/maria

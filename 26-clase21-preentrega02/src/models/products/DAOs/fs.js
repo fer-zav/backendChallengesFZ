@@ -11,7 +11,12 @@ export class ProductosFSDAO{
         ];
         this.nombreArchivo = fileName;
         this.productos = mockData;
-        this.guardar();
+        fs.stat(this.nombreArchivo, (err, stats) => {
+            if (JSON.stringify(this.productos, null, "\t").length > stats.size){
+                this.guardar(); // para evitar el loop infinito de nodemon, ademas de asegurar que exista un minimo de productos al momento de inicializar
+            }
+        })
+
     }
 
     leer = async (archivo) => {

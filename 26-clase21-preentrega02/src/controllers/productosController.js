@@ -11,7 +11,7 @@ class Producto {
         next();
     }
 
-    async checkProductExists(req, res, next) {
+    checkProductExists = async (req, res, next) => {
         const id = req.params.id;
         const producto = await productsAPI.getProducts(id);
         if (!producto) {
@@ -22,7 +22,7 @@ class Producto {
         next();
     }
 
-    async getProducts(req, res) {
+    getProducts = async (req, res) => {
         const {id} = req.params;
         const {nombre, precio} = req.query;
         if (id) {
@@ -43,7 +43,7 @@ class Producto {
         });
     }
 
-    async addProducts(req, res) {
+    addProducts = async (req, res) => {
         const newItem = await productsAPI.addProduct(req.body);
         res.json({
             msg: "producto agregado con exito",
@@ -51,7 +51,7 @@ class Producto {
         });
     }
 
-    async updateProducts(req, res) {
+    updateProducts = async (req, res) => {
         const id = req.params.id;
         const updatedItem = await productsAPI.updateProduct(id, req.body);
         res.json({
@@ -60,7 +60,7 @@ class Producto {
         });
     }
 
-    async deleteProducts(req, res) {
+    deleteProducts = async (req, res) => {
         const id = req.params.id;
         await productsAPI.deleteProduct(id);
         res.json({

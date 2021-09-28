@@ -1,7 +1,9 @@
 import {ProductosFactoryDAO} from "../models/products/products.factory.js";
 import {TipoPersistencia} from "../models/products/products.factory.js";
 
-const tipo = TipoPersistencia.SQL;
+const options = Object.keys(TipoPersistencia);
+const tipo = TipoPersistencia[options[Math.floor(Math.random() * options.length)]];
+console.log(`Products: Hoy toca... ${tipo}!`)
 const local = true;
 
 class prodAPI{
@@ -9,23 +11,23 @@ class prodAPI{
         this.productos = ProductosFactoryDAO.get(tipo, local);
     }
 
-    async getProducts(id = undefined){
+    getProducts = async (id = undefined) => {
         return id ? this.productos.get(id) : this.productos.get();
     }
 
-    async addProduct(productData){
+    addProduct = async (productData) => {
         return await this.productos.add(productData);
     }
 
-    async updateProduct(id, productData){
+    updateProduct = async (id, productData) => {
         return await this.productos.update(id, productData);
     }
 
-    async deleteProduct(id){
+    deleteProduct = async (id) => {
         await this.productos.delete(id);
     }
 
-    async query(options){
+    query = async (options) => {
         return await this.productos.query(options);
     }
 }

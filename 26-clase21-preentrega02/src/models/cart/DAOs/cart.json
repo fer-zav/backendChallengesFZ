@@ -1,0 +1,38 @@
+[
+	{
+		"_id": "1",
+		"timestamp": 1631231271759,
+		"nombre": "Sofa",
+		"precio": 105,
+		"descripcion": "Sofa rojo",
+		"codigo": "123332",
+		"foto": "https://image.flaticon.com/icons/png/512/123/123332.png",
+		"totalStock": 16,
+		"currentQuantity": 0,
+		"stock": 100
+	},
+	{
+		"_id": "2",
+		"timestamp": 1631231272759,
+		"nombre": "Aspiradora",
+		"precio": 139,
+		"descripcion": "Aspiradora Moderna",
+		"codigo": "123364",
+		"foto": "https://image.flaticon.com/icons/png/512/123/123364.png",
+		"totalStock": 35,
+		"currentQuantity": 0,
+		"stock": 100
+	},
+	{
+		"_id": "3",
+		"timestamp": 1631231273759,
+		"nombre": "Cuadro",
+		"precio": 1020,
+		"descripcion": "Marco de madera!",
+		"codigo": "123344",
+		"foto": "https://image.flaticon.com/icons/png/512/123/123344.png",
+		"totalStock": 49,
+		"currentQuantity": 0,
+		"stock": 100
+	}
+]

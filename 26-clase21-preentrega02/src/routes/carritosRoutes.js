@@ -1,27 +1,13 @@
 import Router from "express";
+import {cartController} from "../controllers/cartsController.js";
+import {checkAdmin} from "../middleware/admin.js";
+import asyncHandler from "express-async-handler";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-    res.json("GET A CART");
-});
-
-router.post("/", (req, res) => {
-    res.json("POST A CART");
-});
-
-router.put("/", (req, res) => {
-    res.json("PUT A CART");
-});
-
-router.delete("/", (req, res) => {
-    res.json("DELETE A CART");
-});
-/*
-router.get("/:id?",                 cartController.checkProductExists,  asyncHandler(cartController.getProducts));
-router.post("/",        checkAdmin, cartController.checkAddProducts,    asyncHandler(cartController.addProducts));
-router.put("/:id",      checkAdmin, cartController.checkProductExists,  asyncHandler(cartController.updateProducts));
-router.delete("/:id",   checkAdmin, cartController.checkProductExists,  asyncHandler(cartController.deleteProducts));
-*/
+router.get("/:id?",     checkAdmin, cartController.checkCartExists,     asyncHandler(cartController.getCarts));
+router.post("/:id",     checkAdmin, /*cartController.checkAddCarts,*/    asyncHandler(cartController.addCarts));
+// router.put("/:id",      checkAdmin, cartController.checkCartExists,  asyncHandler(cartController.updateCarts)); // not implemented, since it's NOT used in cart class;
+router.delete("/:id",   checkAdmin, cartController.checkCartExists,     asyncHandler(cartController.deleteCarts));
 
 export default router;
