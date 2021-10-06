@@ -1,0 +1,49 @@
+<div class="container">
+    <% if (payload.length > 0){ %>
+    <table class="table table-responsive text-center" id="prodsTable">
+        <tr>
+            <td class="fw-bold">Nombre</td>
+            <td class="fw-bold">Precio</td>
+            <td class="fw-bold">Preview</td>
+            <td class="fw-bold">Descripcion</td>
+        </tr>
+        <% payload.map(function(item){ %>
+        <tr>
+            <td><%= item.name %></td>
+            <td>$<%= item.price %></td>
+            <td><img class="thumb" src="<%= item.foto %>" /></td>
+            <td><%= item.description %></td>
+        </tr>
+        <% }); %>
+    </table>
+    <% }else{ %>
+    <h2>La cantidad no puede ser vacia!</h2>
+    <% } %>
+</div>
+<hr />
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <form onsubmit="return addMessage(this)" id="wsForm">
+        <div class="mb-3">
+            <label for="username" class="form-label fw-bold">Usuario</label>
+            <input type="text" id="msgUsername" name="username" placeholder="Tu nombre" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label fw-bold">Mensaje</label>
+            <input type="text" id="msgTexto" name="text" placeholder="A ver, contame mas..." class="form-control" />
+        </div>
+        <div class="mb-3">
+            <input type="submit" id="btnMsgSubmit" name="btn" class="btn btn-success" onclick="return addMessage(this)" type="submit" value="Enviar" />
+        </div>
+    </form>
+    <div id="messages"></div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../public/ws_main.js"></script>
+<script src="../../public/ws_msging.js"></script>
+<script>
+    const sendProd = () => socket.emit("add_prods", {
+            title: document.querySelector("#productTitle").value,
+            price: document.querySelector("#productPrice").value,
+            thumbnail: document.querySelector("#productThumbnail").value,
+        });
+</script>
