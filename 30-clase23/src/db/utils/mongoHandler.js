@@ -14,18 +14,20 @@ class MDB {
         });
         console.log("MongoDB connected!");
         this.querytable = undefined;
+        this.increment = 1;
     }
 
     init = async (tableName) => {
         if ([mdb, pdb].indexOf(tableName) > -1) {
+            const f = [faker.name, faker.internet];
             this.querytable = tableName == mdb ? mensajesModel : productosModel;
             let payload = []
             if (tableName == mdb){
                 payload = [
-                    {mensaje: {id: 1, author: {id: 1, nombre: "Nombre", apellido: "Real", edad: 18, alias: "FakeUser", avatar: "http://www.placecage.com/300/300"}, createdAt: `${(new Date().getTime())}`, text: `${faker.hacker.phrase()}`}},
-                    {mensaje: {id: 2, author: {id: 2, nombre: "Nombre", apellido: "Falso", edad: 18, alias: "RealUser", avatar: "http://www.fillmurray.com/300/300"}, createdAt: `${(new Date().getTime())}`, text: `${faker.commerce.productDescription()}`}},
-                    {mensaje: {id: 3, author: {id: 3, nombre: "Nombre", apellido: "Real", edad: 18, alias: "FakeUser", avatar: "http://www.placecage.com/c/300/300"}, createdAt: `${(new Date().getTime())}`, text: `${faker.hacker.phrase()}`}},
-                    {mensaje: {id: 4, author: {id: 4, nombre: "Nombre", apellido: "Falso", edad: 18, alias: "RealUser", avatar: "http://www.fillmurray.com/g/300/300"}, createdAt: `${(new Date().getTime())}`, text: `${faker.commerce.productDescription()}`}},
+                    {author: {id: this.increment, email: f[1].email(), nombre: f[0].firstName(), apellido: f[0].lastName(), edad: 18, alias: f[1].userName(), avatar: "http://www.placecage.com/300/300"}, id: this.increment++, createdAt: `${(new Date().getTime())}`, text: `${faker.hacker.phrase()}`},
+                    {author: {id: this.increment, email: f[1].email(), nombre: f[0].firstName(), apellido: f[0].lastName(), edad: 18, alias: f[1].userName(), avatar: "http://www.fillmurray.com/300/300"}, id: this.increment++, createdAt: `${(new Date().getTime())}`, text: `${faker.commerce.productDescription()}`},
+                    {author: {id: this.increment, email: f[1].email(), nombre: f[0].firstName(), apellido: f[0].lastName(), edad: 18, alias: f[1].userName(), avatar: "http://www.placecage.com/c/300/300"}, id: this.increment++, createdAt: `${(new Date().getTime())}`, text: `${faker.hacker.phrase()}`},
+                    {author: {id: this.increment, email: f[1].email(), nombre: f[0].firstName(), apellido: f[0].lastName(), edad: 18, alias: f[1].userName(), avatar: "http://www.fillmurray.com/g/300/300"}, id: this.increment++, createdAt: `${(new Date().getTime())}`, text: `${faker.commerce.productDescription()}`},
                 ]
             }else if (tableName == pdb){
                 payload = [
@@ -42,8 +44,8 @@ class MDB {
                 ]
             }
             payload.forEach(async (entry) => {
-                let realId = `${entry.mensaje.id}`;
-                const query = await this.querytable.find({id: realId}).then((q) => q);
+                // let realId = `${entry.id}`;
+                const query = await this.querytable.find({id: "1"}).then((q) => q);
                 if (query.length < 1){
                     const newEntry = new this.querytable(entry);
                     let saveEntry = await newEntry.save();

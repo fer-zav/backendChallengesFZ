@@ -14,6 +14,7 @@ const addMessage = (e) => {
 }
 
 const lowCostRender = (payload) => {
+    console.log(payload)
     const html = payload
         .map((elem) => {
             return `<div>

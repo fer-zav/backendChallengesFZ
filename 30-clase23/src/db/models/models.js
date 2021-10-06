@@ -9,19 +9,18 @@ const mensajesCollection = "mensajes";
 //     createdAt: {type: Number, required: true},
 // });
 const mensajesSchema = new Mongoose.Schema({
-    mensaje: {
+    author: {
         id: {type: Number, required: true},
-        author: {
-            id: {type: Number, required: true},
-            nombre: {type: String, required: true, max: 250},
-            apellido: {type: String, required: true, max: 250},
-            edad: {type: Number, required: true},
-            alias: {type: String, required: true, max: 250},
-            avatar: {type: String, required: true, max: 2500},
-        },
-        createdAt: {type: String, required: true, max: 25},
-        text: {type: String, max: 2500},
-    }
+        email: {type: String, required: true, max: 250},
+        nombre: {type: String, required: true, max: 250},
+        apellido: {type: String, required: true, max: 250},
+        edad: {type: Number, required: true},
+        alias: {type: String, required: true, max: 250},
+        avatar: {type: String, required: true, max: 2500},
+    },
+    id: {type: Number, required: true},
+    createdAt: {type: String, required: true, max: 25},
+    text: {type: String, max: 2500},
 });
 export const mensajesModel = new Mongoose.model(mensajesCollection, mensajesSchema);
 export const mdb = mensajesCollection;
