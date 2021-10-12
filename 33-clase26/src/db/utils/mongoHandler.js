@@ -1,5 +1,3 @@
-// const mongoose = require("mongoose");
-// const {productosModel, mensajesModel, mdb, pdb} = require("../models/models.js");
 import mongoose from "mongoose";
 import faker from "faker";
 import {productosModel, mensajesModel, mdb, pdb} from "../models/models.js";
@@ -42,7 +40,7 @@ class MDB {
                 ]
             }
             payload.forEach(async (entry) => {
-                let realId = `${entry.mensaje.id}`;
+                let realId = this.querytable === mdb ? `${entry.mensaje.id}` : `${entry.id}`;
                 const query = await this.querytable.find({id: realId}).then((q) => q);
                 if (query.length < 1){
                     const newEntry = new this.querytable(entry);

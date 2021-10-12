@@ -1,4 +1,5 @@
 import Mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const mensajesCollection = "mensajes";
 const mensajesSchema = new Mongoose.Schema({
