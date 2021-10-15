@@ -9,4 +9,6 @@ export const Config = {
     MONGO_ATLAS_DBNAME:   process.env.MONGO_ATLAS_DBNAME   || "dbName",
     MONGO_LOCAL_DBNAME:   process.env.MONGO_LOCAL_DBNAME   || "dbNameLocal",
     SESSION_SECRET:       process.env.SESSION_SECRET       || "someSrting",
+    FACEBOOK_APP_ID:      process.env.FACEBOOK_APP_ID      || "fbCoderAppId",
+    FACEBOOK_APP_SECRET:  process.env.FACEBOOK_APP_SECRET  || "fbCoderAppKey",
 };

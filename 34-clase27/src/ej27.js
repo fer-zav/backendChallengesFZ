@@ -1,26 +1,22 @@
 import express from "express";
 import session from "express-session";
-import path from 'path';
+import path from "path";
 import * as http from "http";
 import MongoStore from "connect-mongo";
-import passport, {isLoggedIn} from "./middlewares/userLocalAuth.js";
+// import passport, {isLoggedIn} from "./middlewares/userLocalAuth.js";
+import passport, {isLoggedIn} from "./middlewares/userFbAuth.js";
 import {Config} from "./config/config.js";
 import prodEndpoints from "./routes/wsEndpoints.js"
 import cartEndpoints from "./routes/wsCart.js";
 import authEndpoints from "./routes/localAuthEndpoint.js";
 import userEndpoints from "./routes/usersEndpoint.js";
 import {Begin} from "./libws.js";
-import serverChecker from './serverChecker.js';
+import serverChecker from "./serverChecker.js";
 
 const app = express();
 const puerto = process.env.PORT || 8080;
 
-const publicFolderPath = path.resolve("public");
-app.use("/public", express.static(publicFolderPath));
-
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(session({
+const localAuthOptions = session({
     cookie: {
         httpOnly: false,
         secure: false,
@@ -37,7 +33,26 @@ app.use(session({
     rolling: true,
     resave: false,
     saveUninitialized: false,
-}));
+});
+const fbAuthOptions = session({
+    cookie: {
+        httpOnly: false,
+        secure: false,
+        maxAge: 1000 * 60 * 10,
+    },
+    secret: Config.SESSION_SECRET,
+    rolling: true,
+    resave: true,
+    saveUninitialized: true,
+})
+
+const publicFolderPath = path.resolve("public");
+app.use("/public", express.static(publicFolderPath));
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+// app.use(localAuthOptions);
+app.use(fbAuthOptions);
 
 app.use(passport.initialize());
 app.use(passport.session());

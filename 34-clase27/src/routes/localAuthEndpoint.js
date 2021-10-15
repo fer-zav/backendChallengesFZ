@@ -1,9 +1,11 @@
 import cookieParser from "cookie-parser";
 import {Router} from "express";
+import session from "express-session";
 import passport from "../middlewares/userLocalAuth.js";
 
 const authEndpoints = Router();
 authEndpoints.use(cookieParser());
+const loginType = "fb"; // "local"
 
 authEndpoints.get("/", (req, res) => {
     res.json({
@@ -12,17 +14,30 @@ authEndpoints.get("/", (req, res) => {
     });
 });
 
+authEndpoints.get("/facebook", passport.authenticate("facebook", {scope: ['email']}));
+authEndpoints.get("/facebook/callback", passport.authenticate("facebook", {successRedirect: "/auth/userData", failureRedirect: "/auth/fail"}));
+
 authEndpoints.get(["/login", "/ingresar"], (req, res) => {
     res.render('localAuthForm', {
         cant: 0,
-        "logged_": req.user,
+        auth: loginType,
+        logged_: req.user,
+        payload: req.session?.passport?.user,
         layout: "index",
     });
 });
 authEndpoints.get(["/signup", "/registro"], (req, res) => {
     res.render('localSignUpForm', {
         cant: 0,
-        "logged_": req.user,
+        logged_: req.user,
+        layout: "index",
+    });
+});
+authEndpoints.get("/userData", (req, res) => {
+    res.render("fbLoginButton", {
+        auth: loginType,
+        logged_: req.user,
+        payload: req.session.passport.user,
         layout: "index",
     });
 });
@@ -45,16 +60,6 @@ authEndpoints.get('/logout', (req, res) => {
         user: destroyedUser,
         layout: "index"
     });
-    // const destroyedUser = req.session.user
-    // req.session.loggedIn = false;
-    // req.session.destroy((err) => {
-    //     !err
-    //     ? res.render("authLogoutForm", {
-    //         user: destroyedUser,
-    //         layout: "index"
-    //     })
-    //     : res.json({msg: "Error al cerrar sesion", error: err});
-    // });
 });
 
 authEndpoints.get("/fail", (req, res) => {

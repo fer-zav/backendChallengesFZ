@@ -1,6 +1,7 @@
 <div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
     <div class="container">
     <% if (!logged_){ %>
+        <% if (auth === "local"){ %>
         <form action="/auth/login" method="POST">
             <div class="mb-3">
                 <label for="username" class="form-label fw-bold">Usuario</label>
@@ -14,11 +15,16 @@
                 <button type="submit" class="btn btn-success" value="Ingresar" >Ingresar</button>
             </div>
         </form>
+        <% }else if (auth === "fb"){ %>
+        <div class="col text-center">
+            <a href="/auth/facebook" class="btn btn-primary">Login with Facebook</a>
+        </div>
+        <% } %>
     <% }else{ %>
         <div class="mb-3">
             <div class="welcomeField">
                 <h1>
-                    Bienvenido, <%= logged_.username %>!
+                    Bienvenido, <%= logged_.username ?? payload?.displayName %>!
                 </h1>
                 <a type="submit" class="btn btn-success" value="Ingresar" href="/auth/logout">Cerrar Sesion</a>
             </div>
@@ -71,7 +77,7 @@
             <form onsubmit="return addMessage(this)" id="wsForm">
                 <div class="mb-3">
                     <label for="username" class="form-label fw-bold">Usuario</label>
-                    <input type="text" value=<%= logged_.username %> id="msgUsername" name="username" placeholder="Tu nombre" class="form-control" />
+                    <input type="text" value="<%= logged_.username %>" id="msgUsername" name="username" placeholder="Tu nombre" class="form-control" />
                 </div>
                 <div class="mb-3">
                     <label for="text" class="form-label fw-bold">Mensaje</label>
