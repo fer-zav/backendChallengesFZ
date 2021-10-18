@@ -1,12 +1,12 @@
 {
-  "name": "34-clase27",
+  "name": "35-clase28",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "transpile": "node_modules/.bin/babel src --out-dir dist",
-    "start": "node --trace-warnings ./dist/ej27.js",
-    "dev": "nodemon --exec babel-node ./src/ej27.js",
+    "start": "node --trace-warnings ./dist/ej28.js",
+    "dev": "nodemon --exec babel-node ./src/ej28.js",
     "knex-init": "node_modules/.bin/knex init",
     "migrate:db": "node_modules/.bin/knex migrate:latest --env development",
     "rollback:db": "node_modules/.bin/knex migrate:rollback --env development",

@@ -6,15 +6,17 @@ import MongoStore from "connect-mongo";
 // import passport, {isLoggedIn} from "./middlewares/userLocalAuth.js";
 import passport, {isLoggedIn} from "./middlewares/userFbAuth.js";
 import {Config} from "./config/config.js";
+import {args_parse} from "./config/args_parser.js";
 import prodEndpoints from "./routes/wsEndpoints.js"
 import cartEndpoints from "./routes/wsCart.js";
 import authEndpoints from "./routes/localAuthEndpoint.js";
 import userEndpoints from "./routes/usersEndpoint.js";
+import vanillaEndpoints from "./routes/vanillaEndpoints.js";
 import {Begin} from "./libws.js";
 import serverChecker from "./serverChecker.js";
 
 const app = express();
-const puerto = process.env.PORT || 8080;
+const puerto = args_parse().puerto || process.env.PORT || 8080; // solo funciona desde node ./src/ej28.js, NO con nodemon
 
 const localAuthOptions = session({
     cookie: {
@@ -69,6 +71,7 @@ app.use((req, res, next) => {
 app.set("views", "./views");
 app.set("view engine", "ejs");
 
+app.use("/", vanillaEndpoints);
 app.use(["/productos", "/products"], prodEndpoints);
 app.use(["/carrito", "/cart"], cartEndpoints);
 app.use("/auth", authEndpoints);
@@ -83,4 +86,7 @@ server.listen(puerto, () =>
 const wsServer = Begin(server);
 wsServer.on("error", (error) => console.log(`SERVER ERROR!: ${error}`));
 
-serverChecker(puerto);
+process.on("beforeExit", (code) => console.log(`Process is ending with code "${code}"`)); // no estaria funcionando ni con nodemon, ni con node y argumentos. conflicto con express?
+process.on("exit", (code) => console.log(`Process ended with code "${code}"`));
+
+// serverChecker(puerto);

@@ -1,6 +1,7 @@
 import passport from "passport"
 import {Strategy as FBStrategy} from "passport-facebook";
 import {Config} from "../config/config.js";
+import {args_parse} from "../config/args_parser.js";
 
 export const isLoggedIn = (req, res, done) => {
     if (!req.user) return res.status(401).json({msg: "Unathorized"});
@@ -8,9 +9,9 @@ export const isLoggedIn = (req, res, done) => {
 };
 
 const fbAuthOptions = {
-    clientID: Config.FACEBOOK_APP_ID,
-    clientSecret: Config.FACEBOOK_APP_SECRET,
-    callbackURL: `http://localhost:${process.env.PORT || 8080}/auth/facebook/callback`,
+    clientID: args_parse().FB_APP_ID || Config.FACEBOOK_APP_ID,
+    clientSecret: args_parse().FB_APP_KEY || Config.FACEBOOK_APP_SECRET,
+    callbackURL: `http://localhost:${args_parse().puerto || process.env.PORT || 8080}/auth/facebook/callback`,
     profileFields: ["id", "displayName", "photos", "emails"],
 }
 const fbLoginFunc = (accessToken, refreshToken, profile, done) => {

@@ -1,5 +1,5 @@
-import express from 'express';
-import Items from '../Items.js'
+import express from "express";
+import Items from "../Items.js"
 import faker from "faker";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -31,7 +31,6 @@ endpoints.use(session({
         maxAge: 1000 * 60 * 10,
     }
 }));
-
 
 const [userName, password] = ["testName", "testPassword"];
 
@@ -83,7 +82,7 @@ endpoints.get("/login", (req, res) => {
     console.log(req.query);
     const getProds = () => {return {...productos}};
     console.log(req.session)
-    res.render('loginForm', {
+    res.render("loginForm", {
         "logged_": req.session.loggedIn,
         "user": req.session.user,
         "productos": getProds(),
@@ -91,7 +90,7 @@ endpoints.get("/login", (req, res) => {
         layout: "index",
     });
 });
-endpoints.get('/logout', (req, res) => {
+endpoints.get("/logout", (req, res) => {
     const destroyedUser = req.session.user
     req.session.loggedIn = false;
     req.session.destroy((err) => {
@@ -106,7 +105,7 @@ endpoints.get('/logout', (req, res) => {
 
 endpoints.get(["/vista", "/views"], (req, res) => {
     const getProds = () => {return {...productos}};
-    res.render('main', {
+    res.render("main", {
         "productos": getProds(),
         "cant": productos.getLastItemId(),
         layout: "index",
@@ -135,7 +134,7 @@ endpoints.get(["/listar", "/list", "/listar/:id", "/list/:id"], (req, res) => {
 
 endpoints.get(["/guardar", "/save"], (req, res) => {
     const getProds = () => {return {...productos}};
-    res.render('form', {
+    res.render("form", {
         "productos": getProds(),
         "cant": productos.getLastItemId(),
         layout: "index",
