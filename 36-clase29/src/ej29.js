@@ -46,7 +46,7 @@ const fbAuthOptions = session({
     rolling: true,
     resave: true,
     saveUninitialized: true,
-})
+});
 
 const publicFolderPath = path.resolve("public");
 app.use("/public", express.static(publicFolderPath));
@@ -89,4 +89,6 @@ wsServer.on("error", (error) => console.log(`SERVER ERROR!: ${error}`));
 process.on("beforeExit", (code) => console.log(`Process is ending with code "${code}"`)); // no estaria funcionando ni con nodemon, ni con node y argumentos. conflicto con express?
 process.on("exit", (code) => console.log(`Process ended with code "${code}"`));
 
-// serverChecker(puerto);
+serverChecker(puerto);
+
+export default app;
