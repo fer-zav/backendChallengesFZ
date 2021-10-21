@@ -13,8 +13,8 @@
     "seed:db": "node_modules/.bin/knex seed:run --env development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cleanup" : "pm2 stop all && pm2 delete all",
-    "fork-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -FB_APP_ID=912205946067785 -FB_APP_KEY=6b94e865f8b08449abd7133a381162c5 -mode=fork",
-    "cluster-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -FB_APP_ID=912205946067785 -FB_APP_KEY=6b94e865f8b08449abd7133a381162c5 -mode=cluster"
+    "fork-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -mode=fork",
+    "cluster-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -mode=cluster"
   },
   "keywords": [],
   "author": "",
