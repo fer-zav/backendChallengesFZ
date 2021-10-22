@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Crud</title>
+    </head>
+    <body>
+        <h1>Ingresa un producto nuevo</h1>
+        <form action="/api/productos/guardar" method="POST">
+            <div>
+                <div>
+                    <label for="title">Titulo:</label>
+                    <input type="text" id="productTitle" name="title">
+                </div>
+                <div>
+                    <label for="price">Precio:</label>
+                    <input type="text" id="productPrice" name="price">
+                </div>
+                <div>
+                    <label for="thumbnail">Preview:</label>
+                    <input type="text" id="productThumbnail" name="thumbnail">
+                </div>
+                <div>
+                    <button type="submit">Cargar Producto</button>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
