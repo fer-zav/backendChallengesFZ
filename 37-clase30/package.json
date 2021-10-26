@@ -1,20 +1,23 @@
 {
-  "name": "36-clase29",
+  "name": "37-clase30",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "transpile": "node_modules/.bin/babel src --out-dir dist",
-    "start": "node --trace-warnings ./dist/ej29.js",
-    "dev": "nodemon --exec babel-node ./src/ej29.js",
+    "start": "node --trace-warnings ./dist/ej30.js",
+    "dev": "nodemon --exec babel-node ./src/ej30.js",
     "knex-init": "node_modules/.bin/knex init",
     "migrate:db": "node_modules/.bin/knex migrate:latest --env development",
     "rollback:db": "node_modules/.bin/knex migrate:rollback --env development",
     "seed:db": "node_modules/.bin/knex seed:run --env development",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cleanup" : "pm2 stop all && pm2 delete all",
-    "fork-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -mode=fork",
-    "cluster-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=881 -mode=cluster"
+    "fork-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=8081 -mode=fork",
+    "cluster-wrap": "node --trace-warnings ./src/indexWraper.js -puerto=8082 -mode=cluster",
+    "fork": "pm2 start ./src/ej30.js --name=serverFork --watch -f -- 8081",
+    "cluster": "pm2 start ./src/ej30.js --name=serverCluster --watch -i 0 -f -- 8082",
+    "pm2-eco": "pm2 start ./ecosystem.config.cjs"
   },
   "keywords": [],
   "author": "",
