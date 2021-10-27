@@ -1,0 +1,99 @@
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <div class="container">
+    <% if (!logged_){ %>
+        <form action="/products/login" method="GET">
+            <div class="mb-3">
+                <label for="user" class="form-label fw-bold">Usuario</label>
+                <input type="text" id="user" name="user" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="pass" class="form-label fw-bold">Contraseña</label>
+                <input type="password" id="pass" name="pass" class="form-control" />
+            </div>
+            <div class="col text-center">
+                <button type="submit" class="btn btn-success" value="Ingresar" >Ingresar</button>
+            </div>
+        </form>
+    <% }else{ %>
+        <div class="mb-3">
+            <div class="welcomeField">
+                <h1>
+                    Bienvenido, <%= user %>!
+                </h1>
+                <a type="submit" class="btn btn-success" value="Ingresar" href="/products/logout">Cerrar Sesion</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <h1 class="text-center formPadding">Ingresa un producto nuevo</h1>
+    <div class="container">
+        <!-- <form action="/api/productos/guardar" method="POST"> -->
+            <div class="mb-3">
+                <label for="title" class="form-label fw-bold">Titulo</label>
+                <input type="text" id="productTitle" name="title" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label fw-bold">Precio</label>
+                <input type="text" id="productPrice" name="price" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="thumbnail" class="form-label fw-bold">Preview</label>
+                <input type="text" id="productThumbnail" name="thumbnail" class="form-control" />
+            </div>
+            <div class="col text-center">
+                <input type="submit" class="btn btn-success" onclick="sendProd()" value="Cargar Producto" />
+            </div>
+        <!-- </form> -->
+    </div>
+</div>
+<hr />
+<div class="container">
+    <% if (cant){ %>
+    <table class="table table-responsive text-center" id="prodsTable">
+        <tr>
+            <td class="fw-bold">Nombre</td>
+            <td class="fw-bold">Precio</td>
+            <td class="fw-bold">Preview</td>
+        </tr>
+        <% productos._items.map(function(item){ %>
+        <tr>
+            <td><%= item.title %></td>
+            <td>$<%= item.price %></td>
+            <td><img class="thumb" src="<%= item.thumbnail %>" /></td>
+        </tr>
+        <% }); %>
+    </table>
+    <% }else{ %>
+    <h2>No hay productos!</h2>
+    <% } %>
+</div>
+<hr />
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <form onsubmit="return addMessage(this)" id="wsForm">
+        <div class="mb-3">
+            <label for="username" class="form-label fw-bold">Usuario</label>
+            <input type="text" id="msgUsername" name="username" placeholder="Tu nombre" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label fw-bold">Mensaje</label>
+            <input type="text" id="msgTexto" name="text" placeholder="A ver, contame mas..." class="form-control" />
+        </div>
+        <div class="mb-3">
+            <input type="submit" id="btnMsgSubmit" name="btn" class="btn btn-success" onclick="return addMessage(this)" type="submit" value="Enviar" />
+        </div>
+    </form>
+    <div id="messages"></div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../../public/ws_main.js"></script>
+<script src="../../public/ws_msging.js"></script>
+<script>
+    const sendProd = () => socket.emit("add_prods", {
+            title: document.querySelector("#productTitle").value,
+            price: document.querySelector("#productPrice").value,
+            thumbnail: document.querySelector("#productThumbnail").value,
+        });
+</script>
+    <% } %>
