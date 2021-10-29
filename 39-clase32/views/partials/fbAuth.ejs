@@ -1,0 +1,45 @@
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <a href="/auth/login">Main Site</a>
+    <div class="container">
+    <% if (!logged_){ %>
+        <% if (auth === "local"){ %>
+        <form action="/auth/login" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label fw-bold">Usuario</label>
+                <input type="text" id="username" name="username" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label fw-bold">Contraseña</label>
+                <input type="password" id="password" name="password" class="form-control" />
+            </div>
+            <div class="col text-center">
+                <button type="submit" class="btn btn-success" value="Ingresar" >Ingresar</button>
+            </div>
+        </form>
+        <% }else if (auth === "fb"){ %>
+        <div class="col text-center">
+            <a href="/auth/facebook" class="btn btn-primary">Login with Facebook</a>
+        </div>
+        <% } %>
+    <% }else{ %>
+        <div class="mb-3">
+            <div class="welcomeField">
+                <h1>
+                    Bienvenido, <%= payload.displayName %>!
+                </h1>
+                <a type="submit" class="btn btn-success" value="Ingresar" href="/auth/logout">Cerrar Sesion</a>
+            </div>
+        </div>
+        <div class="mb-3">
+            <span>Data Encontrada:</span><p></p>
+            <ul>
+                <div><strong>ID</strong>: <%= payload.id %></div>
+                <div><strong>Nombre</strong>: <%= payload.displayName %></div>
+                <div><strong>eMail</strong>: <%= payload.emails.map((i) => i.value)[0] %></div>
+                <div><strong>Foto de Perfil</strong> <img src ="<%= payload.photos.map((i) => i.value)[0] %>" /></div>
+                <div><strong>Provedor de datos</strong>: <%= payload.provider %></div>
+            </ul>
+        </div>
+    <% } %>
+    </div>
+</div>
