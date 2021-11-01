@@ -1,6 +1,9 @@
 import Items from "./Items.js";
 import {Server} from "socket.io";
 import {MDBService} from "./db/utils/mongoHandler.js";
+import * as logger from "./log/logdef.js";
+
+const [consola, logWarn, logError] = [logger.default.console, logger.default.warn, logger.default.error];
 
 export const Begin = (app) => {
     const tableName = "mensajes";
@@ -48,10 +51,10 @@ export const Begin = (app) => {
                         socket.emit("messages_init", payload);
                         msgCount = payload.length;
                     })
-                    .catch((err) => console.log(err))
+                    .catch((err) => logError.error(err))
                     .finally();
             }else{
-                console.error("FATAL ERROR: CAN'T FETCH MESSAGES FROM DB!")
+                consola.error("FATAL ERROR: CAN'T FETCH MESSAGES FROM DB!")
             }
         });
 
@@ -59,8 +62,8 @@ export const Begin = (app) => {
             const initID = 2111;
             if (msgdb()){
                 msgdb().create({...msg, id: initID + msgCount}) // 2111 es el id del 1er mensaje, no encontre como hacerlo auto-incremental "/
-                    .then(() => console.log("new message added"))
-                    .catch((err) => console.log(err.toString()))
+                    .then(() => consola.info("new message added"))
+                    .catch((err) => logError.error(err.toString()))
                     .finally(() => {
                         if (msgdb()){
                             msgdb().get(`${initID + msgCount}`)
@@ -71,12 +74,12 @@ export const Begin = (app) => {
                                     });
                                     io.emit("push_new_message", payload);
                                 })
-                                .catch((err) => console.log(err))
+                                .catch((err) => logError.error(err))
                                 .finally((q) => {
                                     msgCount++;
                                 });
                         }else{
-                            console.error("FATAL ERROR: CAN'T FETCH MESSAGES FROM DB!")
+                            consola.error("FATAL ERROR: CAN'T FETCH MESSAGES FROM DB!")
                         }
                     });
             }
