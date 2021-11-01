@@ -16,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@babel/runtime": "^7.15.3",
     "bcrypt": "^5.0.1",
