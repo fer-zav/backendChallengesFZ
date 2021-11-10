@@ -1,0 +1,47 @@
+<div class="container col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-8">
+    <div class="container">
+    <% if (!logged_){ %>
+        <form action="/auth/signup" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label fw-bold">Usuario</label>
+                <input type="text" id="username" name="username" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label fw-bold">Contraseña</label>
+                <input type="password" id="password" name="password" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">E-mail</label>
+                <input type="text" id="email" name="email" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="firstName" class="form-label fw-bold">Nombre</label>
+                <input type="text" id="firstName" name="firstName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label fw-bold">Apellido</label>
+                <input type="text" id="lastName" name="lastName" class="form-control" />
+            </div>
+            <div class="col text-center">
+                <button type="submit" class="btn btn-success" value="Registrarse" >Registrarse</button>
+            </div>
+        </form>
+    <% }else{ %>
+        <div class="mb-3">
+            <div class="welcomeField">
+                <h1>
+                    Bienvenido, <%= logged_.username %>, ya ingresaste al sistema!
+                </h1>
+            </div>
+            <div>
+                redirigiendo...
+            </div>
+            <script>
+                setTimeout(() => {
+                    document.location = `${document.location.protocol}//${document.location.host}/users/`
+                }, 3000);
+            </script>
+        </div>
+    <% } %>
+    </div>
+</div>
